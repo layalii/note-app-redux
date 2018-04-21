@@ -1,0 +1,15 @@
+.RichTextEditor__root___2QXK- {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  border: 0 !important;
+  font-family: inherit !important;
+}
+
+.EditorToolbar__root___3_Aqz {
+  border: 0;
+}
+
+.RichTextEditor__editor___1QqIU {
+  flex-grow: 1;
+}
