@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import Header from './Layout/Header';
 import Footer from './Layout/Footer';
@@ -11,21 +12,6 @@ export default class App extends Component {
       {
         id: "note-1",
         title: "default",
-        content: ""
-      },
-      {
-        id: "note-2",
-        title: "note 2",
-        content: ""
-      },
-      {
-        id: "note-3",
-        title: "note 3",
-        content: ""
-      },
-      {
-        id: "note-4",
-        title: "note 4",
         content: ""
       }
     ],
@@ -41,18 +27,39 @@ export default class App extends Component {
   }
 
   addNote = (title) => {
+    const id = `note-${this.state.notesList.length + 1}`;
     this.setState({
       notesList: this.state.notesList.concat({
-        id: `note-${this.state.notesList.length + 1}`,
+        id,
         title,
         content: ""
-      })
+      }),
+      selectedNote: id
     })
   }
 
   deleteNoteById = (id) => {
     this.setState({
       notesList: this.state.notesList.filter(note => note.id !== id)
+    })
+  }
+
+  _getIndexOfNoteById = (id) => {
+    let index = 0;
+    this.state.notesList.forEach((note, i) => {
+      if(note.id === id) {
+        index = i;
+      }
+    })
+    return index;
+  }
+
+  updateNote = (newContent) => {
+    const noteIndex = this._getIndexOfNoteById(this.state.selectedNote);
+    const notesList = _.cloneDeep(this.state.notesList);
+    notesList[noteIndex].content = newContent;
+    this.setState({
+      notesList
     })
   }
 
@@ -74,7 +81,13 @@ export default class App extends Component {
               onNoteItemDeleted={id => {
                 this.deleteNoteById(id);
               }} />
-            <Main />
+            <Main
+              notesList={this.state.notesList}
+              selectedNote={this.state.selectedNote}
+              onNoteUpdated={newContent => {
+                this.updateNote(newContent);
+              }}
+              />
           </div>
         </div>
       </div>,
