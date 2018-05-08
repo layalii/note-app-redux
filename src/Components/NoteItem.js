@@ -15,6 +15,7 @@ const NoteItem = (props) => {
       <div className="ml-auto d-inline">
         <a href="#delete" className="text-danger btn p-0" onClick={e => {
           e.preventDefault();
+          e.stopPropagation();
           props.onNoteItemDeleted(props.noteId);
         }}>
           <i className="fe fe-delete"></i>

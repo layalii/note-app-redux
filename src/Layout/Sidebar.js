@@ -15,21 +15,26 @@ const Sidebar = (props) => {
         <div className="list-group list-group-transparent">
           <div className={
               classnames("list-group-item list-group-item-action d-flex align-items-center", {
-                'active': props.selectedNote === "note-1"
+                'active': props.selectedNote === "default"
               })
             }
             onClick={e => {
-              props.onNoteItemClick('note-1');
+              props.onNoteItemClick('default');
             }}>
             <span className="icon mr-3"><i className="fe fe-inbox"></i></span>Default
           </div>
-          {props.notesList.filter(note => note.id !== 'note-1').map(noteObject => (
+          {props.notesList.filter(note => note.id !== 'default').map(noteObject => (
             <NoteItem key={noteObject.id}
               noteId={noteObject.id} 
               selectedNote={props.selectedNote}
               title={noteObject.title}
               onNoteItemClick={props.onNoteItemClick}
-              onNoteItemDeleted={props.onNoteItemDeleted} />
+              onNoteItemDeleted={noteId => {
+                props.onNoteItemDeleted(noteId);
+                // if(store.getState().notes.length === 1) {
+
+                // }
+              }} />
           ))}
         </div>
       </div>

@@ -1,66 +1,51 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
+import React,{ Component } from 'react';
+import uid from 'uid';
+import { connect } from 'react-redux';
+
 
 import Header from './Layout/Header';
 import Footer from './Layout/Footer';
 import Sidebar from './Layout/Sidebar';
 import Main from './Layout/Main';
 
-export default class App extends Component {
-  state = {
-    notesList: [
-      {
-        id: "note-1",
-        title: "default",
-        content: ""
-      }
-    ],
-    selectedNote: "note-1"
+
+class App extends Component {
+  
+  showContent = (id) => {
+    const action = { 
+      type: 'SET_SELECTED_NOTE',
+      noteId: id
+    }
+    this.props.dispatch(action);
   }
 
-  selectNote = (id) => {
-    this.setState({
-      selectedNote: id
-    }, () => {
-      console.log(this.state.selectedNote);
-    })
+  addNoteToList = (title) => {
+    const action = {
+      type : 'ADD_NOTE_TO_LIST',
+      newNote: {
+        id :  uid(),
+        content: '',
+        title: title,
+      }  
+    }
+    this.props.dispatch(action);  
   }
 
-  addNote = (title) => {
-    const id = `note-${this.state.notesList.length + 1}`;
-    this.setState({
-      notesList: this.state.notesList.concat({
-        id,
-        title,
-        content: ""
-      }),
-      selectedNote: id
-    })
-  }
-
-  deleteNoteById = (id) => {
-    this.setState({
-      notesList: this.state.notesList.filter(note => note.id !== id)
-    })
-  }
-
-  _getIndexOfNoteById = (id) => {
-    let index = 0;
-    this.state.notesList.forEach((note, i) => {
-      if(note.id === id) {
-        index = i;
-      }
-    })
-    return index;
+  deleteNoteFromList = (id) => {
+    const action = {
+      type :'DELETE_NOTE_FROM_LIST',
+      noteToDelete : id
+    }
+    this.props.dispatch(action);
   }
 
   updateNote = (newContent) => {
-    const noteIndex = this._getIndexOfNoteById(this.state.selectedNote);
-    const notesList = _.cloneDeep(this.state.notesList);
-    notesList[noteIndex].content = newContent;
-    this.setState({
-      notesList
-    })
+    const action ={
+      type : 'UPDATE_NOTE_CONTENT',
+      noteId : this.props.selectedNote,
+      newContent: newContent
+    }
+    this.props.dispatch(action)
   }
 
   render() {
@@ -70,20 +55,20 @@ export default class App extends Component {
         <div className="container my-3 d-flex flex-grow-1">
           <div className="row flex-nowrap flex-grow-1 flex-column flex-md-row">
             <Sidebar
-              notesList={this.state.notesList}
-              selectedNote={this.state.selectedNote}
+              notesList={this.props.notes}
+              selectedNote={this.props.selectedNote}
               onNoteItemAdded={title => {
-                this.addNote(title);
+                this.addNoteToList(title);
               }}
               onNoteItemClick={id => {
-                this.selectNote(id);
+                this.showContent(id);
               }}
               onNoteItemDeleted={id => {
-                this.deleteNoteById(id);
+                this.deleteNoteFromList(id);
               }} />
             <Main
-              notesList={this.state.notesList}
-              selectedNote={this.state.selectedNote}
+              notesList={this.props.notes}
+              selectedNote={this.props.selectedNote}
               onNoteUpdated={newContent => {
                 this.updateNote(newContent);
               }}
@@ -95,3 +80,12 @@ export default class App extends Component {
     ]
   }
 }
+
+const mapStateToProps = (globalStore) => {
+  return { 
+    selectedNote: globalStore.selectedNote,
+    notes:globalStore.notes,
+  }
+}
+
+export default connect(mapStateToProps)(App);
