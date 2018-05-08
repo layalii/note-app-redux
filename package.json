@@ -2,7 +2,7 @@
   "name": "notes-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://ossamaz.github.io/note-app",
+  "homepage": "http://layalii.github.io/note-app-redux",
   "dependencies": {
     "classnames": "^2.2.5",
     "gh-pages": "^1.1.0",
