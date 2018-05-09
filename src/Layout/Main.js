@@ -1,5 +1,15 @@
 import React from 'react';
 import RichTextEditor from 'react-rte';
+import { connect } from 'react-redux';
+
+const updateNoteContent = (newContent, noteId, dispatch) => {
+  const action ={
+    type : 'UPDATE_NOTE_CONTENT',
+    noteId : noteId,
+    newContent: newContent
+  }
+  dispatch(action)
+}
 
 const _getNoteById = (id, notesList) => {
 	const found = notesList.filter(note => note.id === id);
@@ -17,7 +27,7 @@ const _getValidContent = (currentNote) => {
 }
 
 const Main = (props) => {
-  const currentNote = _getNoteById(props.selectedNote, props.notesList);
+  const currentNote = _getNoteById(props.selectedNote, props.notes);
   if(!currentNote) {
     return (
       <div className="col-md-9 mt-4 mt-md-0 d-flex flex-grow-1">
@@ -46,7 +56,7 @@ const Main = (props) => {
               value={_getValidContent(currentNote)}
               autoFocus={true}
               onChange={value => {
-                props.onNoteUpdated(value.toString('markdown'))
+                updateNoteContent(value.toString('markdown'), props.selectedNote, props.dispatch)
               }}
               readOnly={false}
             />
@@ -57,4 +67,11 @@ const Main = (props) => {
   )
 }
 
-export default Main;
+const mapStateToProps = (globalStore) => {
+  return { 
+    selectedNote: globalStore.selectedNote,
+    notes: globalStore.notes,
+  }
+}
+
+export default connect(mapStateToProps)(Main);

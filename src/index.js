@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import _ from 'lodash';
 
+
 const notes = localStorage.getItem('notes');
 let defaultNotes;
 if(notes) {
@@ -74,11 +75,20 @@ const notesReducer = (state = defaultNotes, action) => {
 
 const globalStore = {
   selectedNote: selectedNoteReducer,
-  notes:notesReducer,
+  notes: notesReducer,
 }
 
 const rootReducer = combineReducers(globalStore);
 const store = createStore(rootReducer);
+
+store.subscribe(() => {
+  const state = store.getState();
+  try {
+    localStorage.setItem('notes', JSON.stringify(state.notes));
+    localStorage.setItem('selectedNote', state.selectedNote);
+  } catch(error) {}
+})
+
 
 ReactDOM.render(
   <Provider store ={store}>
